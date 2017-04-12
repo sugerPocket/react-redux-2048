@@ -10,6 +10,11 @@ class GameState {
 
     this.score  = 0;
     this.target = target;
+    this.config = {
+      target,
+      width,
+      height
+    };
     
     this.cells  = new Array(width);
     
@@ -20,7 +25,7 @@ class GameState {
       this.cells[i] = cellsCloumn;
     }
 
-    this.tilesList = new Array(height * width);
+    this.tiles = new Array(height * width);
   }
 }
 
@@ -34,7 +39,9 @@ function game(state = getInitState(), action) {
     case actions.MOVE:
       return move(state, vectors[action.direction]);
     case actions.INITORRESET:
-      return getInitState(); 
+      return getInitState();
+    default:
+      return getInitState();
   }
 }
 
@@ -71,8 +78,8 @@ function createTile(state) {
   let newTile = new Tile(x, y, value);
   state.cells[x][y].setTile(newTile);
 
-  let index = findTheOpen(state.tilesList);
-  if (index != -1) state.tilesList[index] = newTile;
+  let index = findTheOpen(state.tiles);
+  if (index != -1) state.tiles[index] = newTile;
 
   return state;
 }

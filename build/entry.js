@@ -1,3 +1,3 @@
-import store from '../src/test';
+import store from '../src/index.js';
 
 
