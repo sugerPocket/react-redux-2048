@@ -1,0 +1,27 @@
+{
+  "name": "react-2048",
+  "version": "1.0.0",
+  "description": "A simple react + redux game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "webpack"
+  ],
+  "author": "sugerpocket",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^15.4.2",
+    "redux": "^3.6.0",
+    "webpack": "^2.3.0",
+    "react-redux": "^5.0.4"
+  },
+  "devDependencies": {
+    "redux-devtools": "^3.3.2",
+    "redux-devtools-dock-monitor": "^1.1.1",
+    "redux-devtools-log-monitor": "^1.2.0"
+  }
+}
