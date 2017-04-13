@@ -12,6 +12,7 @@ class Cell {
     anotherTile.setPosition('x', this.tile.getPosition('x'));
     anotherTile.setPosition('y', this.tile.getPosition('y'));
     anotherTile.readyToRemove();
+    this.tile.merge();
   }
   remove() {
     this.tile = null;
@@ -20,7 +21,7 @@ class Cell {
     this.tile = newTile;
   }
   isEmpty() {
-    return (this.tile === null);
+    return (this.tile == null);
   }
 }
 

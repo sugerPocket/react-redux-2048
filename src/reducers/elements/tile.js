@@ -3,7 +3,9 @@ class Tile {
     this.x = x;
     this.y = y;
     this.value = value;
-    this.removable = false;
+    this.merged = false;
+    this.isNew = true;
+    this.isExisting = true;
   }
   getPosition(propertyName) {
     if (propertyName !== 'x' && propertyName !== 'y') return null;
@@ -12,8 +14,11 @@ class Tile {
   setPosition(propertyName, value) {
     if (typeof value === 'number') this[propertyName] = value;
   }
+  merge() {
+    this.merged = true;
+  }
   readyToRemove() {
-    this.removable = true;
+    this.isExisting = false;
   }
 }
 

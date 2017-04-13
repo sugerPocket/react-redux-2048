@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import App from './containers/App';
+import bootstrap from 'bootstrap-loader';
 import game from './reducers/game';
 
 let store = createStore(

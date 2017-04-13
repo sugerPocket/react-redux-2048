@@ -17,6 +17,15 @@ module.exports = {
     }, {
       test: /\.sass$/,
       loader: 'style-loader!css-loader!sass-loader'
+    }, {
+      test: /\.(woff2?|svg)$/,
+      loader: 'url-loader?limit=10000'
+    }, {
+      test: /\.(ttf|eot)$/,
+      loader: 'file-loader'
+    }, {
+      test: /bootstrap-sass[\/\\]assets[\/\\]javascripts[\/\\]/,
+      loader: 'imports-loader?jQuery=jquery'
     }]
   },
   devServer: {

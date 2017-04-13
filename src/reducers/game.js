@@ -37,7 +37,7 @@ class GameState {
 function game(state = getInitState(), action) {
   switch (action.type) {
     case actions.MOVE:
-      return move(state, vectors[action.direction]);
+      return move(state, action.direction);
     case actions.INITORRESET:
       return getInitState();
     default:
@@ -118,12 +118,16 @@ function isConverseIter(direction) {
  */
 function move(state, direction) {
   let newState = Object.assign({}, state);
+  if (!direction) return newState;
+  else direction = vectors[direction];
   
   let isConverse = isConverseIter(direction);
   let i = isConverse ? config.width - 1 : 0;
-  let j = isConverse ? config.length - 1 : 0;
-
+  
+  let hasOperated = false;
+  cleanUpTiles(state.tiles);
   while (isConverse ? i >= 0 : i < config.width) {
+    let j = isConverse ? config.length - 1 : 0;
     while (isConverse ? j >= 0 : j < config.length) {
       if (state.cells[i][j].isEmpty()) {
         isConverse ? j-- : j++;
@@ -132,7 +136,10 @@ function move(state, direction) {
 
       let tile = state.cells[i][j].getTile();
 
-      while (movable(state, tile, direction)) moveOneTile(state, tile, direction);
+      while (movable(state, tile, direction)) {
+        moveOneTile(state, tile, direction);
+        hasOperated = true;
+      }
 
       isConverse ? j-- : j++;
 
@@ -142,11 +149,17 @@ function move(state, direction) {
 
       if (isBlocking(state, tile, direction)) {
         let blockTile = state.cells[x][y].getTile();
-        if (blockTile.value === tile.value) state.cells[x][y].merge(tile);
+        if (blockTile.value === tile.value && !blockTile.merged) {
+          state.cells[tile.x][tile.y].remove();
+          state.cells[x][y].merge(tile);
+          hasOperated = true;
+        }
       }
     }
     isConverse ? i-- : i++;
   }
+
+  if(hasOperated) createTile(newState);
 
   return newState;
 }
@@ -207,7 +220,7 @@ function overStep(tile, direction) {
 function isBlocking(state, tile, direction) {
   let { x, y } = virtualMove(tile, direction);
   
-  return state.cells[x][y].isEmpty();
+  return !state.cells[x][y].isEmpty();
 }
 
 /**
@@ -220,7 +233,19 @@ function isBlocking(state, tile, direction) {
 
 function movable(state, tile, direction) {
   if (overStep(tile, direction)) return false;
-  else return isBlocking(state, tile, direction);
+  else return !isBlocking(state, tile, direction);
+}
+
+/**
+ * @description 清理无用的tile
+ * @param {Array} tiles 
+ */
+function cleanUpTiles(tiles) {
+  tiles.map((tile, index) => {
+    if(tile && !tile.isExisting) tiles[index] = null;
+    if(tile && tile.merged) tile.merged = false;
+    if(tile && tile.isNew) tile.isNew = false;
+  });
 }
 
 export default game;

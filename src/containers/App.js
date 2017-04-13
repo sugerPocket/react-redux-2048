@@ -3,17 +3,25 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { move, initOrReset } from '../actions'
 import Grid from '../components/grid'
-import ReactBootstrap , { Panel, Button, SplitButton, MenuItem, handleSelect } from 'react-bootstrap'
 import styles from '../styles/App.sass'
 
 class App extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown.bind(this))
+  }
+  handleKeyDown($event) {
+    const { dispatch } = this.props
+    dispatch(move($event.keyCode));
+  }
   render() {
     // Injected by connect() call:
-    const { dispatch, tiles, cells } = this.props
+    const { dispatch, tiles, cells, width, height } = this.props
     
     return (
       <div className='container'>
         <Grid
+          width={width}
+          height={height}
           cells={cells}
           tiles={tiles} />
       </div>
@@ -42,6 +50,8 @@ function createCells(config) {
 function select(state) {
   let cells = createCells(state.config);
   return {
+    height: state.config.height,
+    width: state.config.width,
     target: state.config.target,
     tiles: state.tiles,
     cells: cells

@@ -1,0 +1,148 @@
+@mixin tile-style($color: #eee4da, $font-color: #776e65, $font-size: 55px)
+  background: $color
+  color: $font-color
+  font-size: $font-size
+
+@function tile-bg-color($value: 2) 
+  @if $value == 2
+    @return #eee4da
+  @else if $value == 4
+    @return #ede0c8
+  @else if $value == 8
+    @return #f2b179
+  @else if $value == 16
+    @return #f59563
+  @else if $value == 32
+    @return #f67c5f
+  @else if $value == 64
+    @return #f65e3b
+  @else if $value == 128
+    @return #edcf72
+  @else if $value == 256
+    @return #edcc61
+  @else if $value == 512
+    @return #edc850
+  @else if $value == 1024
+    @return #edc53f
+  @else if $value == 2048 
+    @return #edc22e
+  @else
+    @return #eee4da
+
+
+@function tile-font-color($value: 2)
+  @if $value >= 8
+    @return #ffffff
+  @else
+    @return #776e65
+
+@function tile-font-size($value: 2)
+  @if $value <= 64
+    @return 55px
+  @else if $value <= 512
+    @return 45px
+  @else
+    @return 35px
+
+@function power($value, $power)
+  @for $i from 1 to $power
+    $value: $value * $value
+  @return $value
+
+@keyframes new-tile
+  0%
+    opacity: 0
+    transform: scale(0.5, 0.5)
+  100%
+    opacity: 1
+    transform: scale(1, 1)
+
+@keyframes merged-tile
+  0%
+    transform: scale(0.8, 0.8)
+  25%
+    transform: scale(1, 1)
+  75%
+    transform: scale(1.2, 1.2)
+  100%
+    transform: scale(1, 1)
+
+
+.tile
+  position: absolute
+  width: 22%
+  height: 22%
+  margin: 1.5%
+  border-radius: 3px
+  display: inline-block
+  background: rgba(238, 228, 218, 0.35)
+  font-weight: bold
+  transition: all 0.2s ease-in-out
+  opacity: 1
+  z-index: 12
+
+  span
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+
+.tile-new
+  z-index: 10
+  transition: opacity 0.2s ease-in-out 0.2s
+  opacity: 1
+  animation: new-tile 0.2s
+
+.tile-merged
+  z-index: 13
+  animation: merged-tile 0.2s
+
+.tile-nonexisted
+  z-index: 11
+  transition: all 0.2s ease-in-out
+  opacity: 0
+
+$value: 2
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 4
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 8
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 16
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 32
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 64
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 128
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 256
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 512
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 1024
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
+$value: 2048
+.value-#{$value}
+  @include tile-style(tile-bg-color($value), tile-font-color($value), tile-font-size($value))
+
