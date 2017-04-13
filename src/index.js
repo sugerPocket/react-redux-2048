@@ -5,7 +5,10 @@ import { Provider } from 'react-redux';
 import App from './containers/App';
 import game from './reducers/game';
 
-let store = createStore(game);
+let store = createStore(
+  game,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 let rootElement = document.getElementById('root');
 render(

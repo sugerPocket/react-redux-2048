@@ -1,7 +1,9 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import { move, initOrReset } from '../actions'
 import Grid from '../components/grid'
+import ReactBootstrap , { Panel, Button, SplitButton, MenuItem, handleSelect } from 'react-bootstrap'
 import styles from '../styles/App.sass'
 
 class App extends Component {
@@ -10,7 +12,7 @@ class App extends Component {
     const { dispatch, tiles, cells } = this.props
     
     return (
-      <div>
+      <div className='container'>
         <Grid
           cells={cells}
           tiles={tiles} />

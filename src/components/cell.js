@@ -1,12 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class Cell extends Component {
   render() {
+    const { value, x, y } = this.props;
     return (
-      <li
-         x={this.props.x}
-         y={this.props.y}>
-      </li>
+      <div className='cell'
+         x={x}
+         y={y}>
+        {'cell x: ' + x +' y: ' + y}
+      </div>
     );
   }
 }

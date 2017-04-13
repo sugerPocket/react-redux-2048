@@ -1,20 +1,25 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Cell from './cell';
 import Tile from './tile';
 
 export default class Grid extends Component {
   render() {
     return (
-      <ul>
-        {this.props.cells.map((cell, index) =>
+      <div className='game-container'>
+        <div className='cells-container'>
+          {this.props.cells.map((cell, index) =>
           <Cell {...cell}
                 key={index} />
-        )}
-        {this.props.tiles.map((tile, index) =>
-          <Tile {...tile}
-                key={index} />
-        )}
-      </ul>
+          )}
+        </div>
+        <div className='tiles-container'>
+          {this.props.tiles.map((tile, index) =>
+            <Tile {...tile}
+                  key={index} />
+          )}
+        </div>
+      </div>
     )
   }
 }
