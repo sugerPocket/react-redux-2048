@@ -7,8 +7,6 @@ import game from './reducers/game';
 
 let store = createStore(game);
 
-console.log(store.getState());
-
 let rootElement = document.getElementById('root');
 render(
   <Provider store={store}>

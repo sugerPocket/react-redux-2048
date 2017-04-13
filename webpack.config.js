@@ -1,10 +1,11 @@
 let webpack = require('webpack');
 
 module.exports = {
-  entry: './build/entry.js',
+  entry: './src/index.js',
   output: {
-    path: __dirname,
-    filename: 'index.js'
+    path: __dirname + '/build',
+    filename: 'index.js',
+    publicPath: '/build'
   },
   module: {
     loaders: [{
@@ -15,7 +16,12 @@ module.exports = {
       loader: 'style!css'
     }, {
       test: /\.sass$/,
-      loader: 'style!css!sass'
+      loader: 'style-loader!css-loader!sass-loader'
     }]
+  },
+  devServer: {
+    hot: true,
+    inline: true,
+    historyApiFallback: true
   }
 }

@@ -2,11 +2,13 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { move, initOrReset } from '../actions'
 import Grid from '../components/grid'
+import styles from '../styles/App.sass'
 
 class App extends Component {
   render() {
     // Injected by connect() call:
     const { dispatch, tiles, cells } = this.props
+    
     return (
       <div>
         <Grid
@@ -23,10 +25,10 @@ App.propTypes = {
 }
 
 function createCells(config) {
-  let [ { width, length }, cells ] = [ config, [] ];
+  let [ { width, height }, cells ] = [ config, [] ];
 
   for (let x = 0; x < width; x++) {
-    for (let y = 0; y < length; y++) {
+    for (let y = 0; y < height; y++) {
       cells.push({ x, y });
     }
   }
