@@ -35,13 +35,11 @@ for (let i = 0; i < config.width; i++) {
  * @param {GameState} state 当前的 state
  * @param {Object} action redux action
  */
-function game(state = getInitState(), action) {
-  return {
-    config: state.config,
-    tiles: tiles(state.tiles, action),
-    score: score(state.score, action)
-  };
-}
+const game =
+  combineReducers({
+    tiles,
+    score
+  });
 
 /**
  * 
