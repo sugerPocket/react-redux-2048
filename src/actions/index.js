@@ -13,3 +13,10 @@ export const initOrReset = () => {
     type: actions.INITORRESET
   };
 };
+
+export const setScore = (score) => {
+  return {
+    type: action.SET_SCORE,
+    score
+  };
+};

@@ -4,6 +4,6 @@
  * 
  */
 
-export const length = 4;
+export const height = 4;
 export const width  = 4;
 export const target = 2048;

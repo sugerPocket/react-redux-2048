@@ -15,18 +15,19 @@ class GameState {
       width,
       height
     };
-    
-    this.cells  = new Array(width);
-    
-    for (let i = 0; i < width; i++) {
-      let cellsCloumn = [];
-      for (let j = 0; j < height; j++) cellsCloumn.push(new Cell());
-
-      this.cells[i] = cellsCloumn;
-    }
 
     this.tiles = new Array(height * width);
   }
+}
+
+
+let cells  = new Array(config.width);
+    
+for (let i = 0; i < config.width; i++) {
+  let cellsCloumn = [];
+  for (let j = 0; j < config.height; j++) cellsCloumn.push(new Cell());
+
+  cells[i] = cellsCloumn;
 }
 
 /**
@@ -35,14 +36,36 @@ class GameState {
  * @param {Object} action redux action
  */
 function game(state = getInitState(), action) {
-  switch (action.type) {
+  return {
+    config: state.config,
+    tiles: tiles(state.tiles, action),
+    score: score(state.score, action)
+  };
+}
+
+/**
+ * 
+ * @description tiles reducer 入口
+ * @param {Array} tiles
+ * 
+ */
+function tiles(tiles = new Array(config.height * config.width), action) {
+  switch(action.type) {
     case actions.MOVE:
-      return move(state, action.direction);
-    case actions.INITORRESET:
-      return getInitState();
+      return move(tiles, action.direction);
     default:
-      return getInitState();
+      return tiles;
   }
+}
+
+/**
+ * 
+ * @description score reducer 入口
+ * @param {Number} score
+ * 
+ */
+function score(score = 0, action) {
+  return score;
 }
 
 
@@ -51,37 +74,37 @@ function game(state = getInitState(), action) {
  * @return {GameState} state 初始化的 state
  */
 function getInitState() {
-  let state = new GameState(config.length, config.width, config.target);
+  let state = new GameState(config.height, config.width, config.target);
 
-  createTile(state);
-  createTile(state);
+  createTile(state.tiles);
+  createTile(state.tiles);
 
   return state;
 }
 
 /**
  * @description 创建 tile
- * @param {GameState} state  
- * @return {GameState} state 
+ * @param {Array} tiles  
+ * @return {Array} tiles 
  */
-function createTile(state) {
+function createTile(tiles) {
   let x = Math.floor(Math.random() * config.width);
-  let y = Math.floor(Math.random() * config.length);
+  let y = Math.floor(Math.random() * config.height);
 
-  while (!state.cells[x][y].isEmpty()) {
+  while (!cells[x][y].isEmpty()) {
     x = Math.floor(Math.random() * config.width);
-    y = Math.floor(Math.random() * config.length);
+    y = Math.floor(Math.random() * config.height);
   }
 
-  let value = Math.random() * 100 > 70 ? 4 : 2;
+  let value = Math.random() * 100 > 90 ? 4 : 2;
 
   let newTile = new Tile(x, y, value);
-  state.cells[x][y].setTile(newTile);
+  cells[x][y].setTile(newTile);
 
-  let index = findTheOpen(state.tiles);
-  if (index != -1) state.tiles[index] = newTile;
+  let index = findTheOpen(tiles);
+  if (index != -1) tiles[index] = newTile;
 
-  return state;
+  return tiles;
 }
 
 /**
@@ -92,7 +115,7 @@ function createTile(state) {
 function findTheOpen(list) {
   let index = -1;
 
-  for (let i = 0; i < config.width * config.length; i++) {
+  for (let i = 0; i < config.width * config.height; i++) {
     if (!list[i]) {
       index = i;
       break;
@@ -112,32 +135,32 @@ function isConverseIter(direction) {
 
 /**
  * @description 计算 tile 的 move 的方法
- * @param {GameState} state 
+ * @param {Array} tiles 
  * @param {Object} direction 向量
- * @return {GameState} state 
+ * @return {Array} tiles 
  */
-function move(state, direction) {
-  let newState = Object.assign({}, state);
-  if (!direction) return newState;
+function move(tiles, direction) {
+  let newTiles = tiles.concat();
+  if (!direction) return newTiles;
   else direction = vectors[direction];
   
   let isConverse = isConverseIter(direction);
   let i = isConverse ? config.width - 1 : 0;
   
   let hasOperated = false;
-  cleanUpTiles(state.tiles);
+  cleanUpTiles(newTiles);
   while (isConverse ? i >= 0 : i < config.width) {
-    let j = isConverse ? config.length - 1 : 0;
-    while (isConverse ? j >= 0 : j < config.length) {
-      if (state.cells[i][j].isEmpty()) {
+    let j = isConverse ? config.height - 1 : 0;
+    while (isConverse ? j >= 0 : j < config.height) {
+      if (cells[i][j].isEmpty()) {
         isConverse ? j-- : j++;
         continue;
       }
 
-      let tile = state.cells[i][j].getTile();
+      let tile = cells[i][j].getTile();
 
-      while (movable(state, tile, direction)) {
-        moveOneTile(state, tile, direction);
+      while (movable(tile, direction)) {
+        moveOneTile(tile, direction);
         hasOperated = true;
       }
 
@@ -147,11 +170,11 @@ function move(state, direction) {
 
       let { x, y } = virtualMove(tile, direction);
 
-      if (isBlocking(state, tile, direction)) {
-        let blockTile = state.cells[x][y].getTile();
+      if (isBlocking(tile, direction)) {
+        let blockTile = cells[x][y].getTile();
         if (blockTile.value === tile.value && !blockTile.merged) {
-          state.cells[tile.x][tile.y].remove();
-          state.cells[x][y].merge(tile);
+          cells[tile.x][tile.y].remove();
+          cells[x][y].merge(tile);
           hasOperated = true;
         }
       }
@@ -159,9 +182,9 @@ function move(state, direction) {
     isConverse ? i-- : i++;
   }
 
-  if(hasOperated) createTile(newState);
+  if(hasOperated) createTile(newTiles);
 
-  return newState;
+  return newTiles;
 }
 
 /**
@@ -183,16 +206,15 @@ function virtualMove(tile, direction) {
 
 /**
  * @description 移动一个 tile
- * @param {GameState} state 
  * @param {Tile} tile 
  * @param {Object} direction 
  */
-function moveOneTile(state, tile, direction) {
+function moveOneTile(tile, direction) {
   let { x, y } = virtualMove(tile, direction);
 
-  state.cells[x][y].setTile(tile);
+  cells[x][y].setTile(tile);
 
-  state.cells[tile.getPosition('x')][tile.getPosition('y')].remove();
+  cells[tile.getPosition('x')][tile.getPosition('y')].remove();
 
   tile.setPosition('x', x);
   tile.setPosition('y', y);
@@ -207,33 +229,31 @@ function moveOneTile(state, tile, direction) {
 function overStep(tile, direction) {
   let { x, y } = virtualMove(tile, direction);
 
-  return x < 0 || y < 0 || x >= config.width || y >= config.length;
+  return x < 0 || y < 0 || x >= config.width || y >= config.height;
 }
 
 /**
  * @description 判断是否有tile阻挡
- * @param {GameState} state 
  * @param {Tile} tile 
  * @param {Object} direction 
  * @return {Boolean} isBlocking
  */
-function isBlocking(state, tile, direction) {
+function isBlocking(tile, direction) {
   let { x, y } = virtualMove(tile, direction);
   
-  return !state.cells[x][y].isEmpty();
+  return !cells[x][y].isEmpty();
 }
 
 /**
  * @description 判断是否可移动
- * @param {GameState} state 
  * @param {Tile} tile 
  * @param {Object} direction 
  * @return {Boolean} movable
  */
 
-function movable(state, tile, direction) {
+function movable(tile, direction) {
   if (overStep(tile, direction)) return false;
-  else return !isBlocking(state, tile, direction);
+  else return !isBlocking(tile, direction);
 }
 
 /**
