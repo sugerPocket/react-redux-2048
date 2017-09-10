@@ -6,7 +6,7 @@ import style from '../styles/grid.sass';
 
 export default class Grid extends Component {
   render() {
-    const { tiles, cells, height, width } = this.props;
+    const { tiles, cells, height, width, dispatch } = this.props;
     return (
       <div className='game-container'>
         <div className='cells-container'>
@@ -25,6 +25,7 @@ export default class Grid extends Component {
               this.props.tiles.map((tile, index) => {
                 if (tile)
                  return (<Tile {...tile}
+                      dispatch={dispatch}
                       height={height}
                       width={width}
                       key={index} />)

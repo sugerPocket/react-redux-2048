@@ -2,25 +2,6 @@ import { Cell, Tile } from './elements';
 import { combineReducers } from 'redux';
 import { actions, config, directions, vectors } from '../constants';
 
-class GameState {
-  constructor(width, height, target) {
-    target  = typeof target === 'number' ? target : 0;
-    width   = typeof width === 'number' ? width : 0;
-    height  = typeof height === 'number' ? height : 0;
-
-    this.score  = 0;
-    this.target = target;
-    this.config = {
-      target,
-      width,
-      height
-    };
-
-    this.tiles = new Array(height * width);
-  }
-}
-
-
 let cells  = new Array(config.width);
     
 for (let i = 0; i < config.width; i++) {
@@ -32,13 +13,13 @@ for (let i = 0; i < config.width; i++) {
 
 /**
  * @description reducer 入口
- * @param {GameState} state 当前的 state
  * @param {Object} action redux action
  */
 const game =
   combineReducers({
     tiles,
-    score
+    score,
+    config () { return config; }
   });
 
 /**
@@ -47,7 +28,7 @@ const game =
  * @param {Array} tiles
  * 
  */
-function tiles(tiles = new Array(config.height * config.width), action) {
+function tiles(tiles = getInitTiles(), action) {
   switch(action.type) {
     case actions.MOVE:
       return move(tiles, action.direction);
@@ -63,21 +44,31 @@ function tiles(tiles = new Array(config.height * config.width), action) {
  * 
  */
 function score(score = 0, action) {
-  return score;
+  switch(action.type) {
+    case actions.ADD_SCORE:
+      return score + action.score;
+    default: 
+      return score;
+  }
 }
 
 
 /**
- * @description 获取 初始化的 state (创建两个 tile)
- * @return {GameState} state 初始化的 state
+ * @description 获取 初始化的 tiles (创建两个 tile)
+ * @return {Tiles[]} tiles 初始化的 tiles
  */
-function getInitState() {
-  let state = new GameState(config.height, config.width, config.target);
+function getInitTiles() {
+  for (let i = 0; i < config.width; i++) {
+    let cellsCloumn = [];
+    for (let j = 0; j < config.height; j++) cellsCloumn.push(new Cell());
+  
+    cells[i] = cellsCloumn;
+  }
+  let tiles = new Array(config.height * config.width)
+  createTile(tiles);
+  createTile(tiles);
 
-  createTile(state.tiles);
-  createTile(state.tiles);
-
-  return state;
+  return tiles;
 }
 
 /**
@@ -100,7 +91,7 @@ function createTile(tiles) {
   cells[x][y].setTile(newTile);
 
   let index = findTheOpen(tiles);
-  if (index != -1) tiles[index] = newTile;
+  tiles[index] = newTile;
 
   return tiles;
 }
@@ -111,7 +102,7 @@ function createTile(tiles) {
  * @return {Number} index 数组下标(-1 表示未找到)
  */
 function findTheOpen(list) {
-  let index = -1;
+  let index = list.length;
 
   for (let i = 0; i < config.width * config.height; i++) {
     if (!list[i]) {

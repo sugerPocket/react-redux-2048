@@ -1,25 +1,44 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { move, initOrReset } from '../actions'
+import { move, initOrReset, addScore } from '../actions'
 import Grid from '../components/grid'
+import Control from '../components/control'
 import styles from '../styles/App.sass'
 
 class App extends Component {
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown.bind(this))
+    this.listener = this.handleKeyDown.bind(this);
+    window.addEventListener('keydown', this.listener);
   }
   handleKeyDown($event) {
-    const { dispatch } = this.props
+    window.removeEventListener('keydown', this.listener);
+    const { dispatch, delay } = this.props;
     dispatch(move($event.keyCode));
+    const score = this.calScore();
+    dispatch(addScore(score));
+    setTimeout(() => window.addEventListener('keydown', this.listener), delay);
+  }
+  calScore() {
+    const { tiles } = this.props
+    let score = 0
+    tiles.forEach(tile => {
+      if (tile !== null && tile.merged) {
+        score += tile.value;
+      }
+    });
+    return score;
   }
   render() {
     // Injected by connect() call:
-    const { dispatch, tiles, cells, width, height } = this.props
+    const { dispatch, tiles, cells, width, height, score } = this.props
     
     return (
       <div className='container'>
+        <Control
+          score={score}/>
         <Grid
+          dispatch={dispatch}
           width={width}
           height={height}
           cells={cells}
@@ -53,7 +72,9 @@ function select(state) {
     height: state.config.height,
     width: state.config.width,
     target: state.config.target,
+    delay: state.config.delay,
     tiles: state.tiles,
+    score: state.score,
     cells: cells
   }
 }

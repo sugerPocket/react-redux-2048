@@ -4,7 +4,7 @@ import style from '../styles/tile.sass';
 
 export default class Tile extends Component {
   render() {
-    const { value, x, y, width, height, isExisting, isNew, merged } = this.props;
+    const { value, x, y, width, height, isExisting, isNew, merged, dispatch } = this.props;
     
     let tileMerged = merged ? ' tile-merged' : '';
     let tileNew = isNew ? ' tile-new' : '';

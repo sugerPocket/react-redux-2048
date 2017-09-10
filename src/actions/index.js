@@ -16,7 +16,14 @@ export const initOrReset = () => {
 
 export const setScore = (score) => {
   return {
-    type: action.SET_SCORE,
+    type: actions.SET_SCORE,
+    score
+  };
+};
+
+export const addScore = (score) => {
+  return {
+    type: actions.ADD_SCORE,
     score
   };
 };
